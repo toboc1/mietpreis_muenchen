@@ -1,0 +1,16 @@
+# Environment
+venv/
+__pycache__/
+*.pyc
+
+# Data (zu groß, also nicht fürs Repo gedacht)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Trainiertes Modell (zu groß fürs Repo)
+model/*.pkl
+
+# OS
+.DS_Store
