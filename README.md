@@ -10,8 +10,8 @@ Ich wollte mein bestehendes Python/Data-Science Wissen mit ersten
 Full-Stack-Skills verbinden: Daten aufbereiten und ein Modell trainieren
 (Data Science) und das Modell dann über ein Backend + einfaches Frontend
 nutzbar machen (Full Stack).
-Im Rahmen der Hands-on-Machine-Learning Vorlesung durfte ich bereits mit streamlit eine Web-App zu erstellen,
-welche über Ridge Regression oder den Desicion Tree Regressor eine Miet-Preis Schätzung berechnet.
+Im Rahmen der Hands-on-Machine-Learning Vorlesung durfte ich bereits mit streamlit eine Web-App erstellen,
+welche über Ridge Regression oder den Decision Tree Regressor eine Miet-Preis Schätzung berechnet.
 
 
 ## Datengrundlage
@@ -30,7 +30,7 @@ mietpreis-muenchen/
 │   ├── data_prep.py     # Laden, Filtern (München), Bereinigen der Daten
 │   └── train_model.py   # Training & Speichern des Modells
 ├── model/
-│   └── model.pkl         # Trainiertes Modell (wird von train_model.py erzeugt)
+│   └── model.pkl         # Trainiertes Modell (nicht im Repo, wird von train_model.py lokal erzeugt)
 ├── app/
 │   ├── app.py            # Flask-Backend mit Vorhersage-API
 │   ├── templates/
@@ -70,6 +70,10 @@ python src/train_model.py
 Das erzeugt `model/model.pkl` und gibt die Modellgüte (R², MAE) in der
 Konsole aus.
 
+## Modell-Performance
+- MAE: 353€
+- R²: 0.742
+
 ## 3. Web-App starten
 
 ```bash
@@ -89,4 +93,4 @@ aber Flask ermöglicht mir das Front-End der Web-App zu gestallten ohne das komi
 - Karte mit Stadtteil-Auswahl statt Freitextfeld
 - Modellvergleich (Lineare Regression vs. Random Forest)
 - Visualisierung des Models durch einen Graphen
-- Front-End visuel Anspruchsvoller gestalten
+- Front-End visuell Anspruchsvoller gestalten
