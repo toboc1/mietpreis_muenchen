@@ -93,3 +93,8 @@ aber Flask ermöglicht mir das Front-End der Web-App zu gestallten ohne das komi
 - Karte mit Stadtteil-Auswahl statt Freitextfeld
 - Modellvergleich (Lineare Regression vs. Random Forest)
 - Front-End visuell Anspruchsvoller gestalten
+- Modellvergleich (Lineare Regression vs. Random Forest)
+    - Modellauswahl in der Web-App: Ridge Regression als zweite Option neben Random Forest
+      (aus der Vorlesung bekannt als bestes Modell), Struktur bereits so vorbereitet,
+      dass sich künftig einfach weitere Modelle ergänzen lassen
+      
