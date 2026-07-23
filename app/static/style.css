@@ -83,12 +83,27 @@ button:hover {
   font-size: 0.9rem;
 }
 
-.chart {
-  margin-top: 1.5rem;
-  text-align: center;
+.card {
+  max-width: 900px;
 }
 
-.chart img {
-  max-width: 100%;
+.layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.form-column {
+  flex: 1 1 320px;
+  min-width: 280px;
+}
+
+.chart-column {
+flex: 1 1 420px;
+}
+
+.chart-column img {
+  width: 100%;
   border-radius: 8px;
 }
