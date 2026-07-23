@@ -92,5 +92,4 @@ aber Flask ermöglicht mir das Front-End der Web-App zu gestallten ohne das komi
 - Deployment (z. B. Render.com oder Fly.io), damit es einen Live-Link gibt
 - Karte mit Stadtteil-Auswahl statt Freitextfeld
 - Modellvergleich (Lineare Regression vs. Random Forest)
-- Visualisierung des Models durch einen Graphen
 - Front-End visuell Anspruchsvoller gestalten
