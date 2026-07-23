@@ -36,6 +36,12 @@
       <div class="result">
         Geschätzte Miete: <strong>{{ prediction }} €</strong>
       </div>
+      {% endif %}
+
+      {% if chart %}
+      <div class="chart">
+        <img src="data:image/png;base64,{{ chart }}" alt="Grafik: Modelvorhersage vs. echte Daten">
+      </div>
     {% endif %}
 
     {% if error %}
