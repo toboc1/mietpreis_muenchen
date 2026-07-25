@@ -1,10 +1,11 @@
 """
-Kleines Flask-Backend, das das trainierte Mietpreis-Modell (Random Forest Regressor)lädt und über
-ein Web-Formular Vorhersagen liefert.
+Flask-Backend, das eines von mehreren trinierten Mietpreis-Modellen lädt 
+und über ein Web-Formular Vorhersagen liefert.
 """
 
 import base64
 import io
+import sys
 from pathlib import Path
 
 import joblib
@@ -15,24 +16,25 @@ import numpy as np
 import pandas as pd
 from flask import Flask, render_template, request
 
-MODEL_PATH = Path(__file__).resolve().parent.parent / "model" / "model.pkl"
+sys.path.append(str(Path(__file__).resolve().parent.parent / "src"))
+from model_config import MODEL_REGISTRY # noqa: E402
+
+MODEL_DIR = Path(__file__).resolve().parent.parent / "model"
 DATA_PATH = Path(__file__).resolve().parent.parent/ "data" / "processed" / "munich_rentals.csv"
+DEFAULT_MODEL_KEY = next(iter(MODEL_REGISTRY))
 
 app = Flask(__name__)
 
-_model = None
+_models = {}
 
 
-def get_model():
-    global _model
-    if _model is None:
-        _model = joblib.load(MODEL_PATH)
-    return _model
+def get_model(model_key):
+    if model_key not in _models:
+        model_path = MODEL_DIR / f"{model_key}.pkl"
+        _models[model_key] = joblib.load(model_path)
+    return _models[model_key]
 
-def build_chart(model, living_space, no_rooms, year_constructed, condition, user_prediction):
-    """
-    Zeigt an, wie die Miete laut dem Model mit der Wohnfläche steigt (roter Faden),
-    zusammen mit den echten Angeboten aus dem Trainingsset (graue Punkte)."""
+def build_chart(model, model_label, living_space, no_rooms, year_constructed, condition, user_prediction):
     df = pd.read_csv(DATA_PATH)
 
     space_range = np.linspace(df["livingSpace"].min(), df["livingSpace"].max(), 50)
@@ -51,6 +53,7 @@ def build_chart(model, living_space, no_rooms, year_constructed, condition, user
             label="Modellvorhersage bei deinen Eingaben")
     ax.scatter([living_space], [user_prediction], color="#e63946", s=80,
                zorder=5, edgecolor="black", label="Deine Eigabe")
+    
     ax.set_xlabel("Wohnfläche (qm)")
     ax.set_ylabel("Miete (€)")
     ax.set_title("Wie RandomForest die Miete vorhersagt")
@@ -68,6 +71,8 @@ def index():
     prediction = None
     error = None
     chart = None
+    selected_model = request.form.get("model.key", DEFAULT_MODEL_KEY)
+    selected_model_label = MODEL_REGISTRY.get(selected_model, {}).get("label", selected_model)
 
     if request.method == "POST":
         try:
@@ -83,15 +88,28 @@ def index():
                 "condition": condition,
             }])
 
-            model = get_model()
+            model = get_model(selected_model)
             prediction = round(float(model.predict(input_df)[0]), 2)
-            chart = build_chart(model, living_space, no_rooms, year_constructed, condition, prediction)
+            chart = build_chart(model, selected_model_label, living_space, no_rooms, year_constructed, condition, prediction)
         except FileNotFoundError:
             error = "Es wurde noch kein Modell trainiert. Führe zuerst src/train_model.py aus."
         except Exception as exc:  # bewusst breit für ein kleines Portfolio-Projekt
             error = f"Da ist etwas schiefgelaufen: {exc}"
 
-    return render_template("index.html", prediction=prediction, error=error, chart=chart)
+    model_options = [
+        {"key": key,
+         "label": config["label"]} for key, config in MODEL_REGISTRY.items()
+    ]
+
+    return render_template(
+        "index.html", 
+        prediction=prediction, 
+        error=error, 
+        chart=chart,
+        model_options=model_options,
+        selected_model=selected_model,
+        selected_model_label=selected_model_label,
+        )
 
 
 if __name__ == "__main__":

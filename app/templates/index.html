@@ -30,13 +30,20 @@
             <option value="fully_renovated">Kernsaniert</option>
             <option value="need_of_renovation">Renovierungsbedürftig</option>
           </select>
+          
+          <label for="model_key">Modell</label>
+          <select id="model_key" name="model_key">
+            {% for option in model_options %}
+           <option value="{{ option.key }}" {% if option.key == selected_model %}selected{% endif %}>{{ option.label }}</option>
+           {% endfor %}
+          </select>
 
           <button type="submit">Miete schätzen</button>
         </form>
 
         {% if prediction is not none %}
           <div class="result">
-            Geschätzte Miete: <strong>{{ prediction }} €</strong>
+            Geschätzte Miete ({{ selected_model_label }}): <strong>{{ prediction }} €</strong>
           </div>
         {% endif %}
 
