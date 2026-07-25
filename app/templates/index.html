@@ -14,13 +14,16 @@
       <div class="form-column">
         <form method="POST">
           <label for="living_space">Wohnfläche (qm)</label>
-          <input type="number" step="0.1" id="living_space" name="living_space" required>
+          <input type="number" step="0.1" id="living_space" name="living_space" 
+                 value="{{ request.form.get('living_space', '') }}" required>
 
           <label for="no_rooms">Zimmeranzahl</label>
-          <input type="number" step="0.5" id="no_rooms" name="no_rooms" required>
+          <input type="number" step="0.5" id="no_rooms" name="no_rooms"
+                 value="{{ request.form.get('no_rooms', '') }}" required>
 
           <label for="year_constructed">Baujahr</label>
-          <input type="number" id="year_constructed" name="year_constructed" required>
+          <input type="number" id="year_constructed" name="year_constructed"
+                 value="{{ request.form.get('year_constructed', '') }}" required>
 
           <label for="condition">Zustand</label>
           <select id="condition" name="condition">

@@ -56,7 +56,7 @@ def build_chart(model, model_label, living_space, no_rooms, year_constructed, co
     
     ax.set_xlabel("Wohnfläche (qm)")
     ax.set_ylabel("Miete (€)")
-    ax.set_title("Wie RandomForest die Miete vorhersagt")
+    ax.set_title(f"Wie {model_label} die Miete vorhersagt")
     ax.legend()
     fig.tight_layout
 
@@ -71,7 +71,7 @@ def index():
     prediction = None
     error = None
     chart = None
-    selected_model = request.form.get("model.key", DEFAULT_MODEL_KEY)
+    selected_model = request.form.get("model_key", DEFAULT_MODEL_KEY)
     selected_model_label = MODEL_REGISTRY.get(selected_model, {}).get("label", selected_model)
 
     if request.method == "POST":
