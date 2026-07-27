@@ -34,7 +34,7 @@ def get_model(model_key):
         _models[model_key] = joblib.load(model_path)
     return _models[model_key]
 
-def build_chart(model, model_label, living_space, no_rooms, year_constructed, condition, user_prediction):
+def build_chart(model, model_label, living_space, no_rooms, year_constructed, condition, district, user_prediction):
     df = pd.read_csv(DATA_PATH)
 
     space_range = np.linspace(df["livingSpace"].min(), df["livingSpace"].max(), 50)
@@ -43,6 +43,7 @@ def build_chart(model, model_label, living_space, no_rooms, year_constructed, co
         "noRooms": no_rooms,
         "yearConstructed": year_constructed,
         "condition": condition,
+        "district": district,
     })
     curve_pred = model.predict(curve_input)
 
@@ -80,17 +81,19 @@ def index():
             no_rooms = float(request.form["no_rooms"])
             year_constructed = float(request.form["year_constructed"])
             condition = request.form["condition"]
+            district = request.form["district"]
 
             input_df = pd.DataFrame([{
                 "livingSpace": living_space,
                 "noRooms": no_rooms,
                 "yearConstructed": year_constructed,
                 "condition": condition,
+                "district" : district,
             }])
 
             model = get_model(selected_model)
             prediction = round(float(model.predict(input_df)[0]), 2)
-            chart = build_chart(model, selected_model_label, living_space, no_rooms, year_constructed, condition, prediction)
+            chart = build_chart(model, selected_model_label, living_space, no_rooms, year_constructed, condition, district, prediction)
         except FileNotFoundError:
             error = "Es wurde noch kein Modell trainiert. Führe zuerst src/train_model.py aus."
         except Exception as exc:  # bewusst breit für ein kleines Portfolio-Projekt

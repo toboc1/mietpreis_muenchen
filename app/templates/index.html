@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Mietpreisvorhersage München</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unppkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
   <main class="card">
@@ -24,6 +26,11 @@
           <label for="year_constructed">Baujahr</label>
           <input type="number" id="year_constructed" name="year_constructed"
                  value="{{ request.form.get('year_constructed', '') }}" required>
+
+          <label>Stadtteil</label>
+          <div id="map" style="height: 350px; border-radius: 8px;"></div>
+          <div id="district-display" class="subtitle">Bitte einen Stadtteil auf der Karte auswählen</div>
+          <input type="hidden" id="district" name="district" value="{{request.form.get('district', '') }}">
 
           <label for="condition">Zustand</label>
           <select id="condition" name="condition">
@@ -62,5 +69,62 @@
       {% endif %}
     </div>
   </main>
+  <script>
+    const map = L.map('map').setView([48.1371, 11.5754], 11)
+    L.titlelayer('https://{s}.title.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenstreetMap contributions'
+    }).addTo(map);
+
+    const districtInput = document.getElementById('district');
+    const districtDisplay = document.getElementById('district-display');
+    let selectedLayer = null;
+
+    function styleFeature() {
+      return { color: '#333', weight: 1, fillColor: '#3388ff', fillOpacity: 0.3};
+    }
+
+    function styleFeature(layer) {
+      if (selectedLayer) {
+        geoLayer,resetStyle(selectedLayer);
+      }
+      layer.setStyle({fillColor: '#e63946', fillOpacity: 0.6, weight: 2 });
+      selectedLayer = layer;
+    }
+
+    let geoLayer;
+    fetch("{{ url_for('static', filename='geo/stadtbezirke.geojson') }}")
+    .then(res => res.json())
+    .then(data => {
+      geoLayer = L.geoJSON(data, {
+        style: styleFeature,
+        onEachFeature: (feature, layer) => {
+          layer.on('click', () => {
+            const name = feature.properties.sb_name;
+            highlight(layer);
+          })
+        }
+      }.addTo(map);
+
+      // nach einem Reload (z.B. nach Submit) vorherige Auswahl wieder markieren
+      const preselected = districtInput.value;
+      if (preselected) {
+        geoLayer.eachLayer(layer => {
+          if (layer.feature.properties.sb_name === preselected) {
+            highlight(layer);
+            districtDisplay.textContent = "Ausgewählt: " + preselected;
+          }
+        });
+      }
+    });
+
+    // da "required" auf hidden inputs vom Browser ignoriert wird, hier selbst prüfen
+    document.querySelector('form').addEventListener('submit', (e) => {
+      if (!districtInput.value) {
+        e.preventDefault();
+        districtDisplay.textContent = "Bitte zuerst einen Stadtteil anklicken!";
+        districtDisplay.style.color = '#e63946';
+      }
+    });
+  </script>
 </body>
 </html>
