@@ -8,7 +8,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import Ridge
 
 NUMERIC_FEATURES = ["livingSpace", "noRooms", "yearConstructed"]
-CATEGORICAL_FEATURES = ["condition"]
+CATEGORICAL_FEATURES = ["condition", "district"]
 TARGET = "totalRent"
 
 MODEL_REGISTRY = {

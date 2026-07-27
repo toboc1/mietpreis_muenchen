@@ -9,16 +9,18 @@ https://www.kaggle.com/datasets/corrieaar/apartment-rental-offers-in-germany
 
 import pandas as pd
 from pathlib import Path
+from districts import REGIO3_TO_DISTRICT
 
 RAW_PATH = Path(__file__).resolve().parent.parent / "data" / "raw" / "immo_data.csv"
 OUT_PATH = Path(__file__).resolve().parent.parent / "data" / "processed" / "munich_rentals.csv"
 
 # Spalten, die wir für das Modell brauchen. Je nach Kaggle-Version können
-# Spaltennamen leicht abweichen -- ggf. anpassen, nachdem du dir die Rohdaten
+# Spaltennamen leicht abweichen -- ggf. anpassen, nachdem ich mir die Rohdaten
 # einmal mit df.columns angeschaut hast.
 FEATURE_COLUMNS = [
     "regio1",        # Bundesland
     "regio2",        # Stadt/Landkreis
+    "regio3",        # Stadtteil (ImmoScout-Taxonomie, wird zu district gemappt)
     "livingSpace",   # Wohnfläche in qm
     "noRooms",       # Zimmeranzahl
     "yearConstructed",
@@ -40,6 +42,13 @@ def load_and_filter_munich(raw_path: Path = RAW_PATH) -> pd.DataFrame:
 
 def clean(df: pd.DataFrame) -> pd.DataFrame:
     df = df[[c for c in FEATURE_COLUMNS if c in df.columns]].copy()
+
+    # regio3 -> einer der 25 offiziellen Stadtbezirke. 
+    # Alles, was nicht gemappt werden kann (Landkreis-Gemeinden),
+    # fliegt raus
+    df["district"] = df["regio3"].map(REGIO3_TO_DISTRICT)
+    df = df.dropna(subset=["district"])
+    df = df.drop(columns=["regio3"])
 
     # Zeilen ohne Zielgröße oder wichtige Features raus
     df = df.dropna(subset=["totalRent", "livingSpace", "noRooms"])

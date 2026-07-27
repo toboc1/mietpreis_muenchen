@@ -28,6 +28,8 @@ mietpreis-muenchen/
 │   └── processed/       # Bereinigte/gefilterte Daten
 ├── src/
 │   ├── data_prep.py     # Laden, Filtern (München), Bereinigen der Daten
+│   ├── districts.py     # Crosswalk regio3 → offizielle Stadtbezirke
+│   ├── model_config.py  # Modell-Registry (Features, Modelle)
 │   └── train_model.py   # Training & Speichern des Modells
 ├── model/
 │   └── model.pkl         # Trainiertes Modell (nicht im Repo, wird von train_model.py lokal erzeugt)
@@ -71,8 +73,13 @@ Das erzeugt `model/model.pkl` und gibt die Modellgüte (R², MAE) in der
 Konsole aus.
 
 ## Modell-Performance
-- MAE: 353€
-- R²: 0.742
+
+Verlauf, wie sich neue Features/Optimierungen auf die Vorhersagegüte auswirken:
+
+| Änderung                                                     | Random Forest MAE | Random Forest R² | Ridge MAE | Ridge R² |
+|---------------------------------------------------------------|--------------------|--------------------|-----------|----------|
+| Baseline (livingSpace, noRooms, yearConstructed, condition)   | 353€               | 0.742              | –         | –        |
+| + district (25 Stadtbezirke)                                   | 275€               | 0.832              | 293€      | 0.812    |
 
 ## 3. Web-App starten
 
@@ -89,12 +96,6 @@ aber Flask ermöglicht mir das Front-End der Web-App zu gestallten ohne das komi
 
 ## Nächste Schritte / Ideen
 
+- Karte mit Stadtteil-Auswahl statt Freitextfeld (district als Feature ✅, Leaflet-Karte + Klick-Interaktion offen)
 - Deployment (z. B. Render.com oder Fly.io), damit es einen Live-Link gibt
-- Karte mit Stadtteil-Auswahl statt Freitextfeld
-- Modellvergleich (Lineare Regression vs. Random Forest)
-- Front-End visuell Anspruchsvoller gestalten
-- Modellvergleich (Lineare Regression vs. Random Forest)
-    - Modellauswahl in der Web-App: Ridge Regression als zweite Option neben Random Forest
-      (aus der Vorlesung bekannt als bestes Modell), Struktur bereits so vorbereitet,
-      dass sich künftig einfach weitere Modelle ergänzen lassen
-      
+- Front-End visuell anspruchsvoller gestalten
