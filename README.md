@@ -38,7 +38,9 @@ mietpreis-muenchen/
 │   ├── templates/
 │   │   └── index.html    # Formular + Ergebnisanzeige
 │   └── static/
-│       └── style.css
+│       ├── style.css
+│       └── geo/
+│           └── stadtbezirke.geojson  # Stadtbezirks-Grenzen für die Leaflet-Karte
 ├── requirements.txt
 └── README.md
 ```
@@ -96,6 +98,6 @@ aber Flask ermöglicht mir das Front-End der Web-App zu gestallten ohne das komi
 
 ## Nächste Schritte / Ideen
 
-- Karte mit Stadtteil-Auswahl statt Freitextfeld (district als Feature ✅, Leaflet-Karte + Klick-Interaktion offen)
+- Karte mit Stadtteil-Auswahl statt Freitextfeld (district als Feature ✅, Leaflet-Karte + Klick-Interaktion ✅)
 - Deployment (z. B. Render.com oder Fly.io), damit es einen Live-Link gibt
 - Front-End visuell anspruchsvoller gestalten
